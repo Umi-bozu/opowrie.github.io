@@ -6,8 +6,7 @@
 <title>Oliver Powrie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=Founders+Grotesk+Mono&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<!-- Fallback if Founders Grotesk Mono isn't available via Google -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 
 /* ═══════════════════════════════════════
@@ -23,7 +22,6 @@
   --white2:     rgba(245,245,243,0.55);
   --white3:     rgba(245,245,243,0.25);
   --white4:     rgba(245,245,243,0.1);
-  --accent:     #f5f5f3;  /* white is the accent */
 
   --f-display:  'Cormorant', Georgia, serif;
   --f-sans:     'Instrument Sans', sans-serif;
@@ -43,13 +41,8 @@ body {
   font-weight: 300;
   line-height: 1.6;
   overflow-x: hidden;
-  cursor: default;
 }
 
-/* Custom cursor */
-*, a, button { cursor: default; }
-
-/* ═══ SCROLLBAR ═══ */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--black); }
 ::-webkit-scrollbar-thumb { background: var(--white3); border-radius: 2px; }
@@ -63,7 +56,6 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 2rem 3.5rem;
-  mix-blend-mode: normal;
 }
 
 nav::before {
@@ -113,6 +105,18 @@ nav::before {
   grid-template-rows: 1fr auto;
   padding: 0 3.5rem 3rem;
   position: relative;
+  overflow: hidden;
+}
+
+/* Video background */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
 }
 
 .hero::before {
@@ -121,14 +125,17 @@ nav::before {
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(8,8,8,0.6) 0%,
-    rgba(8,8,8,0.4) 40%,
-    rgba(8,8,8,0.75) 100%
+    rgba(8,8,8,0.55) 0%,
+    rgba(8,8,8,0.35) 40%,
+    rgba(8,8,8,0.8) 100%
   );
   pointer-events: none;
+  z-index: 1;
 }
 
 .hero-content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -218,41 +225,17 @@ nav::before {
   animation: scrollDown 2s 1.5s infinite var(--ease);
 }
 
-/* Thin horizontal rule across the full width */
 .hero-rule {
   height: 1px;
   background: var(--line);
   opacity: 0;
   animation: fadeIn 1s 1s forwards;
-}
-   
-.hero-about-wrap {
   position: relative;
-  background-image: url('hero.JPG');
-  background-size: cover;
-  background-position: center top;
-  background-attachment: fixed;
+  z-index: 2;
 }
 
-.hero-about-wrap::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(8,8,8,0.5) 0%,
-    rgba(8,8,8,0.3) 30%,
-    rgba(8,8,8,0.6) 70%,
-    rgba(8,8,8,0.95) 100%
-  );
-  pointer-events: none;
-}
-   
 /* ═══ SECTIONS ═══ */
-section {
-  position: relative;
-  z-index: 1;
-}
+section { position: relative; z-index: 1; }
 
 .section-wrap {
   padding: 8rem 3.5rem;
@@ -293,11 +276,7 @@ section {
   align-items: start;
 }
 
-.about-text {
-  display: flex;
-  flex-direction: column;
-  gap: 1.4rem;
-}
+.about-text { display: flex; flex-direction: column; gap: 1.4rem; }
 
 .about-text p {
   font-size: 1rem;
@@ -339,102 +318,191 @@ section {
   text-transform: uppercase;
 }
 
-/* ═══ PROJECTS ═══ */
+/* ═══ PROJECTS — CARD GRID ═══ */
 #projects { border-top: 1px solid var(--line); background: var(--off-black); }
 
-.project-list { display: flex; flex-direction: column; }
-
-.project-row {
-  border-bottom: 1px solid var(--line);
-  transition: background 0.4s var(--ease-out);
-  cursor: pointer;
+/* Outer wrapper: stacks card-rows and expand panels vertically */
+.project-grid {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
 }
 
-.project-row:first-child { border-top: 1px solid var(--line); }
-
-.project-row:hover { background: var(--surface); }
-
-.project-row-inner {
+/* Each row holds exactly 3 cards side-by-side */
+.project-row-cards {
   display: grid;
-  grid-template-columns: 3rem 1fr auto auto;
-  align-items: center;
-  gap: 2.5rem;
-  padding: 2rem 0;
-  transition: padding 0.3s var(--ease-out);
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--line);
 }
 
-.project-num {
-  font-family: var(--f-mono);
-  font-size: 0.62rem;
-  color: var(--white3);
-  letter-spacing: 0.15em;
+.project-row-cards:last-of-type {
+  border-bottom: none;
 }
 
-.project-name {
-  font-family: var(--f-display);
-  font-weight: 300;
-  font-size: 1.6rem;
-  letter-spacing: 0.01em;
-  transition: letter-spacing 0.4s var(--ease);
+/* ── CARD ── */
+.project-card {
+  background: var(--off-black);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.35s var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
 }
 
-.project-row:hover .project-name { letter-spacing: 0.04em; }
+.project-card:last-child { border-right: none; }
 
-.project-cat {
-  font-family: var(--f-mono);
-  font-size: 0.6rem;
-  color: var(--white3);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  white-space: nowrap;
+.project-card:hover { background: var(--surface); }
+
+/* Thumbnail zone */
+.card-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: var(--surface);
 }
 
-.project-arrow {
-  font-size: 1rem;
-  color: var(--white3);
-  transition: transform 0.4s var(--ease), color 0.3s;
+.card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease), opacity 0.4s;
+  opacity: 0.75;
+}
+
+.project-card:hover .card-thumb img {
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+/* Placeholder if no image */
+.thumb-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  background: var(--surface);
+  color: var(--white3);
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
-.project-row.open .project-arrow {
+/* Multi-image: show first, fade on hover */
+.card-thumb .thumb-layer {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.card-thumb .thumb-layer:not(:first-child) {
+  opacity: 0;
+}
+
+.project-card:hover .card-thumb .thumb-layer:first-child { opacity: 0; }
+.project-card:hover .card-thumb .thumb-layer:nth-child(2) { opacity: 1; }
+
+/* Card body */
+.card-body {
+  padding: 1.4rem 1.6rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.card-num {
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  color: var(--white3);
+  letter-spacing: 0.2em;
+}
+
+.card-name {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+
+.card-meta {
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  color: var(--white3);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+.card-arrow {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line2);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--white3);
+  background: rgba(8,8,8,0.6);
+  backdrop-filter: blur(6px);
+  transition: transform 0.4s var(--ease), color 0.3s, background 0.3s;
+}
+
+.project-card.open .card-arrow {
   transform: rotate(45deg);
   color: var(--white);
+  background: var(--surface);
 }
 
-/* ── EXPANDED PANEL ── */
-.project-expand {
+/* ── EXPANDED DETAIL PANEL (sits between card rows) ── */
+.card-expand-row {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.7s var(--ease);
+  transition: max-height 0.75s var(--ease);
 }
 
-.project-expand.open { max-height: 1000px; }
+.card-expand-row.open {
+  max-height: 900px;
+}
 
-.project-expand-inner {
-  padding: 0 0 3rem 5.5rem;
+.card-expand-inner {
+  padding: 3rem 3.5rem 3.5rem;
   display: grid;
   grid-template-columns: 1fr 1.1fr;
   gap: 4rem;
   align-items: start;
 }
 
-.project-detail-text {}
+.card-detail-text {}
 
-.project-detail-text p {
+.card-detail-text h3 {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: 1.8rem;
+  letter-spacing: 0.01em;
+  margin-bottom: 1.2rem;
+}
+
+.card-detail-text p {
   font-size: 0.9rem;
   color: var(--white2);
   line-height: 1.85;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1.2rem;
   font-weight: 300;
 }
 
-.project-detail-text p:last-of-type { margin-bottom: 1.8rem; }
-
-/* Outcomes as a clean list */
 .outcomes-list {
   list-style: none;
   display: flex;
@@ -479,10 +547,10 @@ section {
   border-radius: 2px;
 }
 
-/* ── CAROUSEL ── */
+/* ── CAROUSEL inside expand ── */
 .carousel {
   position: relative;
-  background: var(--surface);
+  background: var(--black);
   border: 1px solid var(--line);
   border-radius: 4px;
   overflow: hidden;
@@ -499,7 +567,6 @@ section {
 .carousel-slide {
   min-width: 100%;
   height: 100%;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -507,7 +574,6 @@ section {
   overflow: hidden;
 }
 
-/* Real images: set background-image via inline style or JS */
 .carousel-slide img {
   width: 100%;
   height: 100%;
@@ -515,7 +581,6 @@ section {
   display: block;
 }
 
-/* Placeholder state */
 .slide-placeholder {
   display: flex;
   flex-direction: column;
@@ -546,7 +611,6 @@ section {
   line-height: 1.6;
 }
 
-/* Carousel controls */
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -570,11 +634,8 @@ section {
 .carousel-btn:hover { background: var(--surface); color: var(--white); }
 .carousel-btn.prev { left: 0.8rem; }
 .carousel-btn.next { right: 0.8rem; }
-
-/* Hide arrows if only 1 slide */
 .carousel[data-count="1"] .carousel-btn { display: none; }
 
-/* Dots */
 .carousel-dots {
   position: absolute;
   bottom: 0.8rem;
@@ -596,7 +657,6 @@ section {
 
 .dot.active { background: var(--white); transform: scale(1.3); }
 
-/* Caption overlay */
 .carousel-caption {
   position: absolute;
   bottom: 0;
@@ -734,9 +794,6 @@ footer {
   text-transform: uppercase;
 }
 
-/* ═══ MODAL — full-screen project overlay ═══ */
-/* (kept minimal — the inline expand is the primary UX) */
-
 /* ═══ ANIMATIONS ═══ */
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(30px); }
@@ -753,7 +810,6 @@ footer {
   100% { top: 100%; }
 }
 
-/* Scroll reveal */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -771,7 +827,8 @@ footer {
   .hero { padding: 0 2rem 2.5rem; }
   .section-wrap { padding: 5rem 2rem; }
   .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .project-expand-inner { grid-template-columns: 1fr; gap: 2rem; padding-left: 3.5rem; }
+  .project-row-cards { grid-template-columns: repeat(2, 1fr); }
+  .card-expand-inner { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
   .skills-grid { grid-template-columns: 1fr; }
   .skill-col { border-right: none; border-bottom: 1px solid var(--line); margin: 0; padding: 2rem 0; }
   .skill-col:last-child { border-bottom: none; }
@@ -781,9 +838,7 @@ footer {
 
 @media (max-width: 600px) {
   .nav-links { display: none; }
-  .project-row-inner { grid-template-columns: 2.5rem 1fr auto; }
-  .project-cat { display: none; }
-  .project-expand-inner { padding-left: 0; }
+  .project-row-cards { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -800,9 +855,20 @@ footer {
   </ul>
 </nav>
 
-<div class="hero-about-wrap">
 <!-- ═══ HERO ═══ -->
-<div class="hero">
+<div class="hero" id="top">
+  <!-- 
+    ✏️ REPLACE THE src BELOW with your actual video file name.
+    Put the video file in the same folder as this HTML.
+    Recommended: MP4 format, ideally also a WebM version for better browser support.
+    Keep file size under ~15MB for fast loading (compress with HandBrake if needed).
+  -->
+  <video class="hero-video" autoplay muted loop playsinline poster="hero.JPG">
+    <source src="hero.mp4" type="video/mp4">
+    <source src="hero.webm" type="video/webm">
+    <!-- Falls back to the poster image (hero.JPG) if video can't load -->
+  </video>
+
   <div class="hero-content">
     <div class="hero-index">Aerospace Engineer — Canberra, Australia</div>
     <h1 class="hero-name">
@@ -825,7 +891,7 @@ footer {
 </div>
 
 <!-- ═══ ABOUT ═══ -->
-<section id="about" style="scroll-margin-top: 0;">
+<section id="about">
   <div class="section-wrap">
     <div class="section-header reveal">
       <span class="section-num">01</span>
@@ -833,7 +899,6 @@ footer {
     </div>
     <div class="about-grid">
       <div class="about-text reveal">
-        <!-- ✏️ EDIT: Update bio text as needed -->
         <p>
           I'm a <strong>4th-year Aerospace Systems &amp; Mechatronics Engineering student</strong> at
           the Australian National University, graduating November 2027. I specialise in systems
@@ -852,7 +917,6 @@ footer {
         </p>
       </div>
       <div class="about-right reveal reveal-delay-1">
-        <!-- ✏️ EDIT: Update stats as milestones are reached -->
         <div class="stat-row">
           <span class="stat-val">80+</span>
           <span class="stat-key">Team members led</span>
@@ -873,7 +937,6 @@ footer {
     </div>
   </div>
 </section>
-</div><!-- /hero-about-wrap -->
 
 <!-- ═══ PROJECTS ═══ -->
 <section id="projects">
@@ -883,382 +946,290 @@ footer {
       <h2 class="section-title">Projects</h2>
     </div>
 
-    <div class="project-list">
+    <div class="project-grid" id="projectGrid">
 
-      <!-- ══ PROJECT 1: TEST VEHICLE ══ -->
-      <div class="project-row reveal" onclick="toggleProject(this)">
-        <div class="project-row-inner">
-          <span class="project-num">01</span>
-          <span class="project-name">Full-Scale Rocket Test Vehicle</span>
-          <span class="project-cat">ANU Rocketry · 2025</span>
-          <span class="project-arrow">+</span>
+      <!-- ══ ROW 1: cards 01, 02, 03 ══ -->
+      <div class="project-row-cards">
+
+        <!-- PROJECT 1: TEST VEHICLE -->
+        <div class="project-card reveal" onclick="toggleCard(this, 'expand-01')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder">Add image</div>
+          </div>
+          <div class="card-body">
+            <span class="card-num">01</span>
+            <span class="card-name">Full-Scale Rocket Test Vehicle</span>
+            <span class="card-meta">ANU Rocketry · 2025</span>
+          </div>
+          <div class="card-arrow">+</div>
         </div>
-        <div class="project-expand">
-          <div class="project-expand-inner">
-            <div class="project-detail-text">
-              <!-- ✏️ EDIT: Expand description with any additional outcomes as they happen -->
-              <p>
-                Led end-to-end systems engineering for a full-scale rocket test vehicle — the primary
-                de-risking platform for ANU Rocketry's liquid rocket programme. Responsible for
-                defining requirements, managing subsystem interfaces, and coordinating integration
-                across multiple teams.
-              </p>
-              <p>
-                Produced comprehensive interface control documents (ICDs) enabling seamless knowledge
-                transfer across the team's rotating membership — ensuring continuity of a programme
-                that spans multiple student cohorts.
-              </p>
-              <ul class="outcomes-list">
-                <li>Full systems engineering lifecycle ownership</li>
-                <li>Multi-team integration coordination</li>
-                <li>Comprehensive ICD documentation suite</li>
-                <li>De-risking for liquid rocket programme</li>
-                <!-- ✏️ ADD: More outcomes as the project progresses -->
-              </ul>
-              <div class="tools-row">
-                <span class="tool-chip">Systems Eng.</span>
-                <span class="tool-chip">Requirements</span>
-                <span class="tool-chip">Interface Mgmt</span>
-                <span class="tool-chip">Risk Management</span>
-                <span class="tool-chip">CAD</span>
-              </div>
+
+        <!-- PROJECT 2: CESTOL -->
+        <div class="project-card reveal reveal-delay-1" onclick="toggleCard(this, 'expand-02')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder">Add image</div>
+          </div>
+          <div class="card-body">
+            <span class="card-num">02</span>
+            <span class="card-name">CESTOL Landing Gear</span>
+            <span class="card-meta">Coursework · 2024</span>
+          </div>
+          <div class="card-arrow">+</div>
+        </div>
+
+        <!-- PROJECT 3: GLIDER -->
+        <div class="project-card reveal reveal-delay-2" onclick="toggleCard(this, 'expand-03')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder">Add image</div>
+          </div>
+          <div class="card-body">
+            <span class="card-num">03</span>
+            <span class="card-name">Optimised Lightweight Glider</span>
+            <span class="card-meta">Coursework · 2024</span>
+          </div>
+          <div class="card-arrow">+</div>
+        </div>
+
+      </div><!-- /row 1 cards -->
+
+      <!-- Expand panels for row 1 -->
+      <div class="card-expand-row" id="expand-01">
+        <div class="card-expand-inner">
+          <div class="card-detail-text">
+            <h3>Full-Scale Rocket Test Vehicle</h3>
+            <p>Led end-to-end systems engineering for a full-scale rocket test vehicle — the primary de-risking platform for ANU Rocketry's liquid rocket programme. Responsible for defining requirements, managing subsystem interfaces, and coordinating integration across multiple teams.</p>
+            <p>Produced comprehensive interface control documents (ICDs) enabling seamless knowledge transfer across the team's rotating membership.</p>
+            <ul class="outcomes-list">
+              <li>Full systems engineering lifecycle ownership</li>
+              <li>Multi-team integration coordination</li>
+              <li>Comprehensive ICD documentation suite</li>
+              <li>De-risking for liquid rocket programme</li>
+            </ul>
+            <div class="tools-row">
+              <span class="tool-chip">Systems Eng.</span>
+              <span class="tool-chip">Requirements</span>
+              <span class="tool-chip">Interface Mgmt</span>
+              <span class="tool-chip">Risk Management</span>
+              <span class="tool-chip">CAD</span>
             </div>
-            <!-- CAROUSEL -->
-            <!-- ✏️ HOW TO ADD IMAGES:
-                 1. Put your image files in the same folder as this HTML file
-                 2. Replace each <div class="slide-placeholder"> with:
-                    <img src="your-image.jpg" alt="Description">
-                 3. Update data-caption on each .carousel-slide
-                 4. Update data-count on .carousel to match number of slides
-                 5. Add more .carousel-slide divs as needed, and add matching .dot divs
-            -->
-            <div class="carousel" data-count="2" data-project="0">
-              <div class="carousel-track">
-                <div class="carousel-slide" data-caption="Vehicle overview">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. vehicle assembly</div>
-                  </div>
-                </div>
-                <div class="carousel-slide" data-caption="Systems documentation">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. ICD / documentation</div>
-                  </div>
-                </div>
-              </div>
-              <button class="carousel-btn prev" onclick="carouselPrev(event, this)">&#8592;</button>
-              <button class="carousel-btn next" onclick="carouselNext(event, this)">&#8594;</button>
-              <div class="carousel-dots">
-                <div class="dot active" onclick="carouselGoTo(event, this, 0)"></div>
-                <div class="dot" onclick="carouselGoTo(event, this, 1)"></div>
-              </div>
-              <div class="carousel-caption"></div>
+          </div>
+          <div class="carousel" data-count="2">
+            <div class="carousel-track">
+              <div class="carousel-slide" data-caption="Vehicle overview"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Add photo<br>e.g. vehicle assembly</div></div></div>
+              <div class="carousel-slide" data-caption="Systems documentation"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Add photo<br>e.g. ICD / documentation</div></div></div>
             </div>
+            <button class="carousel-btn prev" onclick="carouselPrev(event,this)">&#8592;</button>
+            <button class="carousel-btn next" onclick="carouselNext(event,this)">&#8594;</button>
+            <div class="carousel-dots"><div class="dot active" onclick="carouselGoTo(event,this,0)"></div><div class="dot" onclick="carouselGoTo(event,this,1)"></div></div>
+            <div class="carousel-caption"></div>
           </div>
         </div>
       </div>
 
-      <!-- ══ PROJECT 2: CESTOL ══ -->
-      <div class="project-row reveal reveal-delay-1" onclick="toggleProject(this)">
-        <div class="project-row-inner">
-          <span class="project-num">02</span>
-          <span class="project-name">CESTOL Landing Gear</span>
-          <span class="project-cat">Coursework · 2024</span>
-          <span class="project-arrow">+</span>
-        </div>
-        <div class="project-expand">
-          <div class="project-expand-inner">
-            <div class="project-detail-text">
-              <p>
-                Designed, manufactured, and validated a CESTOL landing gear assembly featuring a
-                torque arm and suspension system — from first principles through to physical
-                acceptance testing.
-              </p>
-              <p>
-                Structural analysis was conducted in ANSYS FEA and physical load testing performed
-                on an Instron load frame, achieving a factor of safety of 12 and surviving well
-                beyond the required load cycles.
-              </p>
-              <ul class="outcomes-list">
-                <li>Factor of safety: 12</li>
-                <li>Exceeded required load cycles on Instron testing</li>
-                <li>Full design-to-test workflow completed</li>
-                <li>Torque arm + suspension system integrated</li>
-                <!-- ✏️ ADD: Mass, specific load values if comfortable sharing -->
-              </ul>
-              <div class="tools-row">
-                <span class="tool-chip">ANSYS FEA</span>
-                <span class="tool-chip">Instron</span>
-                <span class="tool-chip">CAD</span>
-                <span class="tool-chip">Manufacturing</span>
-                <span class="tool-chip">Structural Analysis</span>
-              </div>
+      <div class="card-expand-row" id="expand-02">
+        <div class="card-expand-inner">
+          <div class="card-detail-text">
+            <h3>CESTOL Landing Gear</h3>
+            <p>Designed, manufactured, and validated a CESTOL landing gear assembly featuring a torque arm and suspension system — from first principles through to physical acceptance testing.</p>
+            <p>Structural analysis was conducted in ANSYS FEA and physical load testing performed on an Instron load frame, achieving a factor of safety of 12.</p>
+            <ul class="outcomes-list">
+              <li>Factor of safety: 12</li>
+              <li>Exceeded required load cycles on Instron testing</li>
+              <li>Full design-to-test workflow completed</li>
+              <li>Torque arm + suspension system integrated</li>
+            </ul>
+            <div class="tools-row">
+              <span class="tool-chip">ANSYS FEA</span>
+              <span class="tool-chip">Instron</span>
+              <span class="tool-chip">CAD</span>
+              <span class="tool-chip">Manufacturing</span>
+              <span class="tool-chip">Structural Analysis</span>
             </div>
-            <div class="carousel" data-count="3" data-project="1">
-              <div class="carousel-track">
-                <div class="carousel-slide" data-caption="CAD model">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. CAD render</div>
-                  </div>
-                </div>
-                <div class="carousel-slide" data-caption="ANSYS FEA results">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. ANSYS FEA output</div>
-                  </div>
-                </div>
-                <div class="carousel-slide" data-caption="Instron testing">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. Instron test setup</div>
-                  </div>
-                </div>
-              </div>
-              <button class="carousel-btn prev" onclick="carouselPrev(event, this)">&#8592;</button>
-              <button class="carousel-btn next" onclick="carouselNext(event, this)">&#8594;</button>
-              <div class="carousel-dots">
-                <div class="dot active" onclick="carouselGoTo(event, this, 0)"></div>
-                <div class="dot" onclick="carouselGoTo(event, this, 1)"></div>
-                <div class="dot" onclick="carouselGoTo(event, this, 2)"></div>
-              </div>
-              <div class="carousel-caption"></div>
+          </div>
+          <div class="carousel" data-count="3">
+            <div class="carousel-track">
+              <div class="carousel-slide" data-caption="CAD model"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">CAD render</div></div></div>
+              <div class="carousel-slide" data-caption="ANSYS FEA results"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">ANSYS FEA output</div></div></div>
+              <div class="carousel-slide" data-caption="Instron testing"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Instron test setup</div></div></div>
             </div>
+            <button class="carousel-btn prev" onclick="carouselPrev(event,this)">&#8592;</button>
+            <button class="carousel-btn next" onclick="carouselNext(event,this)">&#8594;</button>
+            <div class="carousel-dots"><div class="dot active" onclick="carouselGoTo(event,this,0)"></div><div class="dot" onclick="carouselGoTo(event,this,1)"></div><div class="dot" onclick="carouselGoTo(event,this,2)"></div></div>
+            <div class="carousel-caption"></div>
           </div>
         </div>
       </div>
 
-      <!-- ══ PROJECT 3: GLIDER ══ -->
-      <div class="project-row reveal reveal-delay-2" onclick="toggleProject(this)">
-        <div class="project-row-inner">
-          <span class="project-num">03</span>
-          <span class="project-name">Optimised Lightweight Glider</span>
-          <span class="project-cat">Coursework · 2024</span>
-          <span class="project-arrow">+</span>
-        </div>
-        <div class="project-expand">
-          <div class="project-expand-inner">
-            <div class="project-detail-text">
-              <p>
-                Designed and built a glider with a 3D-printed, weight-optimised aerofoil using a
-                bird-bone internal lattice structure — balancing aerodynamic performance with
-                structural efficiency across a 1m wingspan.
-              </p>
-              <p>
-                Launched from approximately 2m altitude, the glider flew 7m — a strong result
-                given the low launch conditions, demonstrating effective lift-to-drag optimisation.
-              </p>
-              <ul class="outcomes-list">
-                <li>1m wingspan</li>
-                <li>Weight: [add when confirmed] <!-- ✏️ EDIT --></li>
-                <li>7m flight distance from ~2m launch altitude</li>
-                <li>Bird-bone internal lattice aerofoil structure</li>
-              </ul>
-              <div class="tools-row">
-                <span class="tool-chip">3D Printing</span>
-                <span class="tool-chip">Aerofoil Design</span>
-                <span class="tool-chip">CAD</span>
-                <span class="tool-chip">Structural Optimisation</span>
-              </div>
+      <div class="card-expand-row" id="expand-03">
+        <div class="card-expand-inner">
+          <div class="card-detail-text">
+            <h3>Optimised Lightweight Glider</h3>
+            <p>Designed and built a glider with a 3D-printed, weight-optimised aerofoil using a bird-bone internal lattice structure — balancing aerodynamic performance with structural efficiency across a 1m wingspan.</p>
+            <p>Launched from approximately 2m altitude, the glider flew 7m — demonstrating effective lift-to-drag optimisation.</p>
+            <ul class="outcomes-list">
+              <li>1m wingspan</li>
+              <li>7m flight distance from ~2m launch altitude</li>
+              <li>Bird-bone internal lattice aerofoil structure</li>
+            </ul>
+            <div class="tools-row">
+              <span class="tool-chip">3D Printing</span>
+              <span class="tool-chip">Aerofoil Design</span>
+              <span class="tool-chip">CAD</span>
+              <span class="tool-chip">Structural Optimisation</span>
             </div>
-            <div class="carousel" data-count="2" data-project="2">
-              <div class="carousel-track">
-                <div class="carousel-slide" data-caption="Completed glider">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. finished glider</div>
-                  </div>
-                </div>
-                <div class="carousel-slide" data-caption="Aerofoil lattice structure">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. lattice interior / CAD</div>
-                  </div>
-                </div>
-              </div>
-              <button class="carousel-btn prev" onclick="carouselPrev(event, this)">&#8592;</button>
-              <button class="carousel-btn next" onclick="carouselNext(event, this)">&#8594;</button>
-              <div class="carousel-dots">
-                <div class="dot active" onclick="carouselGoTo(event, this, 0)"></div>
-                <div class="dot" onclick="carouselGoTo(event, this, 1)"></div>
-              </div>
-              <div class="carousel-caption"></div>
+          </div>
+          <div class="carousel" data-count="2">
+            <div class="carousel-track">
+              <div class="carousel-slide" data-caption="Completed glider"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Finished glider</div></div></div>
+              <div class="carousel-slide" data-caption="Aerofoil lattice structure"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Lattice interior / CAD</div></div></div>
             </div>
+            <button class="carousel-btn prev" onclick="carouselPrev(event,this)">&#8592;</button>
+            <button class="carousel-btn next" onclick="carouselNext(event,this)">&#8594;</button>
+            <div class="carousel-dots"><div class="dot active" onclick="carouselGoTo(event,this,0)"></div><div class="dot" onclick="carouselGoTo(event,this,1)"></div></div>
+            <div class="carousel-caption"></div>
           </div>
         </div>
       </div>
 
-      <!-- ══ PROJECT 4: CUBESAT ══ -->
-      <div class="project-row reveal" onclick="toggleProject(this)">
-        <div class="project-row-inner">
-          <span class="project-num">04</span>
-          <span class="project-name">CubeSat Payload Frame</span>
-          <span class="project-cat">ANU Rocketry · 2024</span>
-          <span class="project-arrow">+</span>
+      <!-- ══ ROW 2: cards 04, 05, 06 ══ -->
+      <div class="project-row-cards">
+
+        <!-- PROJECT 4: CUBESAT -->
+        <div class="project-card reveal" onclick="toggleCard(this, 'expand-04')">
+          <div class="card-thumb">
+            <div class="thumb-layer"><img src="cubesat2.png" alt="CubeSat frame CAD"></div>
+            <div class="thumb-layer"><img src="cubesat1.JPG" alt="CubeSat on-site integration"></div>
+          </div>
+          <div class="card-body">
+            <span class="card-num">04</span>
+            <span class="card-name">CubeSat Payload Frame</span>
+            <span class="card-meta">ANU Rocketry · 2024</span>
+          </div>
+          <div class="card-arrow">+</div>
         </div>
-        <div class="project-expand">
-          <div class="project-expand-inner">
-            <div class="project-detail-text">
-              <p>
-                Designed and validated a lightweight CubeSat payload structure for integration into
-                a rocket payload bay — optimised for minimum mass while meeting tight dimensional
-                constraints.
-              </p>
-              <p>
-                Validated via CAD, machining, and ANSYS FEA. Passed fit and load acceptance testing
-                on first attempt. Also identified a critical integration issue during documentation
-                — the frame did not fit within the vehicle structure — and coordinated the corrective
-                redesign that enabled the payload to fly.
-              </p>
-              <ul class="outcomes-list">
-                <li>Mass-minimised design within dimensional constraints</li>
-                <li>First-pass fit and load acceptance testing</li>
-                <li>Critical integration issue caught and resolved pre-flight</li>
-                <!-- ✏️ ADD: Final mass achieved if comfortable sharing -->
-              </ul>
-              <div class="tools-row">
-                <span class="tool-chip">ANSYS FEA</span>
-                <span class="tool-chip">CAD</span>
-                <span class="tool-chip">Machining</span>
-                <span class="tool-chip">Mass Optimisation</span>
-              </div>
+
+        <!-- PROJECT 5: CPU -->
+        <div class="project-card reveal reveal-delay-1" onclick="toggleCard(this, 'expand-05')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder">Add image</div>
+          </div>
+          <div class="card-body">
+            <span class="card-num">05</span>
+            <span class="card-name">CPU Design &amp; Embedded Systems</span>
+            <span class="card-meta">Coursework · 2023–24</span>
+          </div>
+          <div class="card-arrow">+</div>
+        </div>
+
+        <!-- PROJECT 6: CFD -->
+        <div class="project-card reveal reveal-delay-2" onclick="toggleCard(this, 'expand-06')">
+          <div class="card-thumb">
+            <div class="thumb-placeholder">Add image</div>
+          </div>
+          <div class="card-body">
+            <span class="card-num">06</span>
+            <span class="card-name">CFD Shock &amp; Bow Wave Simulation</span>
+            <span class="card-meta">Coursework · 2023–24</span>
+          </div>
+          <div class="card-arrow">+</div>
+        </div>
+
+      </div><!-- /row 2 cards -->
+
+      <!-- Expand panels for row 2 -->
+      <div class="card-expand-row" id="expand-04">
+        <div class="card-expand-inner">
+          <div class="card-detail-text">
+            <h3>CubeSat Payload Frame</h3>
+            <p>Designed and validated a lightweight CubeSat payload structure for integration into a rocket payload bay — optimised for minimum mass while meeting tight dimensional constraints.</p>
+            <p>Validated via CAD, machining, and ANSYS FEA. Passed fit and load acceptance testing on first attempt. Also identified a critical integration issue during documentation and coordinated the corrective redesign that enabled the payload to fly.</p>
+            <ul class="outcomes-list">
+              <li>Mass-minimised design within dimensional constraints</li>
+              <li>First-pass fit and load acceptance testing</li>
+              <li>Critical integration issue caught and resolved pre-flight</li>
+            </ul>
+            <div class="tools-row">
+              <span class="tool-chip">ANSYS FEA</span>
+              <span class="tool-chip">CAD</span>
+              <span class="tool-chip">Machining</span>
+              <span class="tool-chip">Mass Optimisation</span>
             </div>
-            <div class="carousel" data-count="3" data-project="3">
-              <div class="carousel-track">
-                <div class="carousel-slide" data-caption="CubeSat frame">
-                  <img src="cubesat2.png" alt="CubeSat frame">
-                </div>
-                <div class="carousel-slide" data-caption="FEA analysis">
-                  <img src="cubesat3.png" alt="CubeSat frame">
-                </div>
-               <div class="carousel-slide" data-caption="On site integration">
-                  <img src="cubesat1.JPG" alt="CubeSat description">
-               </div>
-              </div>
-              <button class="carousel-btn prev" onclick="carouselPrev(event, this)">&#8592;</button>
-              <button class="carousel-btn next" onclick="carouselNext(event, this)">&#8594;</button>
-              <div class="carousel-dots">
-                <div class="dot active" onclick="carouselGoTo(event, this, 0)"></div>
-                <div class="dot" onclick="carouselGoTo(event, this, 1)"></div>
-                <div class="dot" onclick="carouselGoTo(event, this, 2)"></div>
-              </div>
-              <div class="carousel-caption"></div>
+          </div>
+          <div class="carousel" data-count="3">
+            <div class="carousel-track">
+              <div class="carousel-slide" data-caption="CubeSat frame"><img src="cubesat2.png" alt="CubeSat frame"></div>
+              <div class="carousel-slide" data-caption="FEA analysis"><img src="cubesat3.png" alt="FEA analysis"></div>
+              <div class="carousel-slide" data-caption="On-site integration"><img src="cubesat1.JPG" alt="On-site integration"></div>
             </div>
+            <button class="carousel-btn prev" onclick="carouselPrev(event,this)">&#8592;</button>
+            <button class="carousel-btn next" onclick="carouselNext(event,this)">&#8594;</button>
+            <div class="carousel-dots"><div class="dot active" onclick="carouselGoTo(event,this,0)"></div><div class="dot" onclick="carouselGoTo(event,this,1)"></div><div class="dot" onclick="carouselGoTo(event,this,2)"></div></div>
+            <div class="carousel-caption"></div>
           </div>
         </div>
       </div>
 
-      <!-- ══ PROJECT 5: CPU ══ -->
-      <div class="project-row reveal reveal-delay-1" onclick="toggleProject(this)">
-        <div class="project-row-inner">
-          <span class="project-num">05</span>
-          <span class="project-name">CPU Design &amp; Embedded Systems</span>
-          <span class="project-cat">Coursework · 2023–24</span>
-          <span class="project-arrow">+</span>
-        </div>
-        <div class="project-expand">
-          <div class="project-expand-inner">
-            <div class="project-detail-text">
-              <p>
-                Designed a custom CPU architecture from first principles, then programmed a BBC
-                micro:bit in ARM assembly and C — spanning digital logic design through to embedded
-                firmware in a single project.
-              </p>
-              <ul class="outcomes-list">
-                <li>Custom CPU architecture designed from scratch</li>
-                <li>ARM assembly + C firmware implemented</li>
-                <li>Hardware-software co-design demonstrated</li>
-                <!-- ✏️ ADD: Details on instruction set, clock speed, or notable features -->
-              </ul>
-              <div class="tools-row">
-                <span class="tool-chip">ARM Assembly</span>
-                <span class="tool-chip">C</span>
-                <span class="tool-chip">Digital Logic</span>
-                <span class="tool-chip">Embedded Systems</span>
-              </div>
+      <div class="card-expand-row" id="expand-05">
+        <div class="card-expand-inner">
+          <div class="card-detail-text">
+            <h3>CPU Design &amp; Embedded Systems</h3>
+            <p>Designed a custom CPU architecture from first principles, then programmed a BBC micro:bit in ARM assembly and C — spanning digital logic design through to embedded firmware.</p>
+            <ul class="outcomes-list">
+              <li>Custom CPU architecture designed from scratch</li>
+              <li>ARM assembly + C firmware implemented</li>
+              <li>Hardware-software co-design demonstrated</li>
+            </ul>
+            <div class="tools-row">
+              <span class="tool-chip">ARM Assembly</span>
+              <span class="tool-chip">C</span>
+              <span class="tool-chip">Digital Logic</span>
+              <span class="tool-chip">Embedded Systems</span>
             </div>
-            <div class="carousel" data-count="1" data-project="4">
-              <div class="carousel-track">
-                <div class="carousel-slide" data-caption="CPU schematic / micro:bit">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add photo here<br>e.g. schematic or micro:bit setup</div>
-                  </div>
-                </div>
-              </div>
-              <button class="carousel-btn prev" onclick="carouselPrev(event, this)">&#8592;</button>
-              <button class="carousel-btn next" onclick="carouselNext(event, this)">&#8594;</button>
-              <div class="carousel-dots">
-                <div class="dot active"></div>
-              </div>
-              <div class="carousel-caption"></div>
+          </div>
+          <div class="carousel" data-count="1">
+            <div class="carousel-track">
+              <div class="carousel-slide" data-caption="CPU schematic / micro:bit"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Schematic or micro:bit setup</div></div></div>
             </div>
+            <button class="carousel-btn prev" onclick="carouselPrev(event,this)">&#8592;</button>
+            <button class="carousel-btn next" onclick="carouselNext(event,this)">&#8594;</button>
+            <div class="carousel-dots"><div class="dot active"></div></div>
+            <div class="carousel-caption"></div>
           </div>
         </div>
       </div>
 
-      <!-- ══ PROJECT 6: CFD ══ -->
-      <div class="project-row reveal reveal-delay-2" onclick="toggleProject(this)">
-        <div class="project-row-inner">
-          <span class="project-num">06</span>
-          <span class="project-name">CFD Shock &amp; Bow Wave Simulation</span>
-          <span class="project-cat">Coursework · 2023–24</span>
-          <span class="project-arrow">+</span>
-        </div>
-        <div class="project-expand">
-          <div class="project-expand-inner">
-            <div class="project-detail-text">
-              <p>
-                Simulated bow and shock wave behaviour under ideal conditions at Mach 3, developing
-                proficiency in computational fluid dynamics for supersonic and high-speed flow regimes.
-              </p>
-              <p>
-                Work covered geometry setup, mesh generation, solver configuration, and post-processing
-                of supersonic flow phenomena — directly applicable to aerospace vehicle design and
-                high-speed propulsion analysis.
-              </p>
-              <ul class="outcomes-list">
-                <li>Mach 3 simulation under ideal gas conditions</li>
-                <li>Bow and shock wave characterisation</li>
-                <li>Full mesh generation and post-processing pipeline</li>
-                <!-- ✏️ ADD: Solver used (Fluent/CFX?), geometry details, any quantitative results -->
-              </ul>
-              <div class="tools-row">
-                <span class="tool-chip">ANSYS CFD</span>
-                <span class="tool-chip">Mesh Generation</span>
-                <span class="tool-chip">Flow Analysis</span>
-                <span class="tool-chip">Post-processing</span>
-              </div>
+      <div class="card-expand-row" id="expand-06">
+        <div class="card-expand-inner">
+          <div class="card-detail-text">
+            <h3>CFD Shock &amp; Bow Wave Simulation</h3>
+            <p>Simulated bow and shock wave behaviour under ideal conditions at Mach 3, developing proficiency in CFD for supersonic and high-speed flow regimes.</p>
+            <p>Work covered geometry setup, mesh generation, solver configuration, and post-processing of supersonic flow phenomena.</p>
+            <ul class="outcomes-list">
+              <li>Mach 3 simulation under ideal gas conditions</li>
+              <li>Bow and shock wave characterisation</li>
+              <li>Full mesh generation and post-processing pipeline</li>
+            </ul>
+            <div class="tools-row">
+              <span class="tool-chip">ANSYS CFD</span>
+              <span class="tool-chip">Mesh Generation</span>
+              <span class="tool-chip">Flow Analysis</span>
+              <span class="tool-chip">Post-processing</span>
             </div>
-            <div class="carousel" data-count="2" data-project="5">
-              <div class="carousel-track">
-                <div class="carousel-slide" data-caption="Shock wave visualisation">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add CFD screenshot here<br>e.g. pressure / Mach contour</div>
-                  </div>
-                </div>
-                <div class="carousel-slide" data-caption="Mesh detail">
-                  <div class="slide-placeholder">
-                    <div class="slide-placeholder-icon">⊕</div>
-                    <div class="slide-placeholder-label">Add CFD screenshot here<br>e.g. mesh / velocity field</div>
-                  </div>
-                </div>
-              </div>
-              <button class="carousel-btn prev" onclick="carouselPrev(event, this)">&#8592;</button>
-              <button class="carousel-btn next" onclick="carouselNext(event, this)">&#8594;</button>
-              <div class="carousel-dots">
-                <div class="dot active" onclick="carouselGoTo(event, this, 0)"></div>
-                <div class="dot" onclick="carouselGoTo(event, this, 1)"></div>
-              </div>
-              <div class="carousel-caption"></div>
+          </div>
+          <div class="carousel" data-count="2">
+            <div class="carousel-track">
+              <div class="carousel-slide" data-caption="Shock wave visualisation"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Pressure / Mach contour</div></div></div>
+              <div class="carousel-slide" data-caption="Mesh detail"><div class="slide-placeholder"><div class="slide-placeholder-icon">⊕</div><div class="slide-placeholder-label">Mesh / velocity field</div></div></div>
             </div>
+            <button class="carousel-btn prev" onclick="carouselPrev(event,this)">&#8592;</button>
+            <button class="carousel-btn next" onclick="carouselNext(event,this)">&#8594;</button>
+            <div class="carousel-dots"><div class="dot active" onclick="carouselGoTo(event,this,0)"></div><div class="dot" onclick="carouselGoTo(event,this,1)"></div></div>
+            <div class="carousel-caption"></div>
           </div>
         </div>
       </div>
 
-    </div><!-- /project-list -->
+    </div><!-- /project-grid -->
   </div>
 </section>
 
@@ -1319,7 +1290,6 @@ footer {
         together.
       </div>
       <div class="contact-detail reveal reveal-delay-1">
-        <!-- ✏️ EDIT: Update contact details as needed -->
         <div class="contact-row">
           <span class="contact-label">Email</span>
           <a href="mailto:powrieo@gmail.com" class="contact-val">powrieo@gmail.com</a>
@@ -1348,81 +1318,71 @@ footer {
 </footer>
 
 <script>
-/* ── PROJECT EXPAND / COLLAPSE ── */
-function toggleProject(row) {
-  const isOpen = row.classList.contains('open');
+/* ── PROJECT CARD EXPAND ── */
+let openCard = null;
+let openExpand = null;
 
-  // Close all others
-  document.querySelectorAll('.project-row.open').forEach(r => {
-    if (r !== row) {
-      r.classList.remove('open');
-      r.querySelector('.project-expand').classList.remove('open');
-    }
-  });
+function toggleCard(card, expandId) {
+  const expand = document.getElementById(expandId);
+  const isOpen = card.classList.contains('open');
 
-  // Toggle this one
-  row.classList.toggle('open', !isOpen);
-  row.querySelector('.project-expand').classList.toggle('open', !isOpen);
+  // Close whatever is currently open
+  if (openCard) {
+    openCard.classList.remove('open');
+    openExpand.classList.remove('open');
+  }
 
-  // Smooth scroll into view after a tick
-  if (!isOpen) {
+  if (isOpen) {
+    // Was open — just close it
+    openCard = null;
+    openExpand = null;
+  } else {
+    // Open this one
+    card.classList.add('open');
+    expand.classList.add('open');
+    openCard = card;
+    openExpand = expand;
     setTimeout(() => {
-      row.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 80);
+      expand.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
   }
 }
 
 /* ── CAROUSEL ── */
-function getCarouselState(carousel) {
-  if (!carousel._index) carousel._index = 0;
-  return carousel._index;
-}
-
 function setCarouselIndex(carousel, index) {
   const count = parseInt(carousel.dataset.count);
-  index = ((index % count) + count) % count; // wrap
+  index = ((index % count) + count) % count;
   carousel._index = index;
-
-  const track = carousel.querySelector('.carousel-track');
-  track.style.transform = `translateX(-${index * 100}%)`;
-
-  // Update dots
+  carousel.querySelector('.carousel-track').style.transform = `translateX(-${index * 100}%)`;
   carousel.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === index));
-
-  // Update caption
   const slides = carousel.querySelectorAll('.carousel-slide');
   const caption = carousel.querySelector('.carousel-caption');
-  if (caption && slides[index]) {
-    caption.textContent = slides[index].dataset.caption || '';
-  }
+  if (caption && slides[index]) caption.textContent = slides[index].dataset.caption || '';
 }
 
 function carouselPrev(e, btn) {
   e.stopPropagation();
-  const carousel = btn.closest('.carousel');
-  setCarouselIndex(carousel, getCarouselState(carousel) - 1);
+  const c = btn.closest('.carousel');
+  setCarouselIndex(c, (c._index || 0) - 1);
 }
 
 function carouselNext(e, btn) {
   e.stopPropagation();
-  const carousel = btn.closest('.carousel');
-  setCarouselIndex(carousel, getCarouselState(carousel) + 1);
+  const c = btn.closest('.carousel');
+  setCarouselIndex(c, (c._index || 0) + 1);
 }
 
 function carouselGoTo(e, dot, index) {
   e.stopPropagation();
-  const carousel = dot.closest('.carousel');
-  setCarouselIndex(carousel, index);
+  setCarouselIndex(dot.closest('.carousel'), index);
 }
 
-// Keyboard navigation for open carousels
 document.addEventListener('keydown', (e) => {
-  const openRow = document.querySelector('.project-row.open');
-  if (!openRow) return;
-  const carousel = openRow.querySelector('.carousel');
-  if (!carousel) return;
-  if (e.key === 'ArrowLeft') setCarouselIndex(carousel, getCarouselState(carousel) - 1);
-  if (e.key === 'ArrowRight') setCarouselIndex(carousel, getCarouselState(carousel) + 1);
+  if (!openCard) return;
+  const c = openExpand && openExpand.querySelector('.carousel');
+  if (!c) return;
+  if (e.key === 'ArrowLeft') setCarouselIndex(c, (c._index || 0) - 1);
+  if (e.key === 'ArrowRight') setCarouselIndex(c, (c._index || 0) + 1);
 });
 
 /* ── SCROLL REVEAL ── */
@@ -1445,14 +1405,18 @@ const navObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       navLinks.forEach(a => {
-        const active = a.getAttribute('href') === `#${entry.target.id}`;
-        a.style.color = active ? 'var(--white)' : '';
+        a.style.color = a.getAttribute('href') === `#${entry.target.id}` ? 'var(--white)' : '';
       });
     }
   });
 }, { threshold: 0.4 });
 
 sections.forEach(s => navObserver.observe(s));
+
+/* ── ENSURE PAGE OPENS AT TOP ── */
+window.addEventListener('beforeunload', () => window.scrollTo(0, 0));
+if (history.scrollRestoration) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
 </script>
 </body>
 </html>
